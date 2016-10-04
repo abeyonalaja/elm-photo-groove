@@ -2,6 +2,8 @@ module PhotoGrove exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
+import Html.App
 
 
 initalModel =
@@ -22,7 +24,7 @@ view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Grove" ]
         , div [ id "thumbnails" ]
-            (List.map (\photo -> viewThumbnail model.selectedUrl photo) model.photos)
+            (List.map (viewThumbnail model.selectedUrl) model.photos)
         , img
             [ class "large"
             , src (urlPrefix ++ "large/" ++ model.selectedUrl)
@@ -35,9 +37,21 @@ viewThumbnail selectedUrl thumbnail =
     img
         [ src (urlPrefix ++ thumbnail.url)
         , classList [ ( "selected", selectedUrl == thumbnail.url ) ]
+        , onClick { operation = "SELECT_PHOTO", data = thumbnail.url }
         ]
         []
 
 
+update msg model =
+    if msg.operation == "SELECT_PHOTO" then
+        { model | selectedUrl = msg.data }
+    else
+        model
+
+
 main =
-    view initalModel
+    Html.App.beginnerProgram
+        { model = initalModel
+        , view = view
+        , update = update
+        }
