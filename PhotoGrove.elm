@@ -4,9 +4,25 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.App
+import Array exposing (Array)
 
 
-initalModel =
+type alias Photo =
+    { url : String }
+
+
+type alias Model =
+    { photos : List Photo
+    , selectedUrl : String
+    }
+
+
+type alias Msg =
+    { operation : String, data : String }
+
+
+initialModel : Model
+initialModel =
     { photos =
         [ { url = "1.jpeg" }
         , { url = "2.jpeg" }
@@ -16,10 +32,17 @@ initalModel =
     }
 
 
+photoArray : Array Photo
+photoArray =
+    Array.fromList initialModel.photos
+
+
+urlPrefix : String
 urlPrefix =
     "http://elm-in-action.com/"
 
 
+view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Grove" ]
@@ -51,7 +74,7 @@ update msg model =
 
 main =
     Html.App.beginnerProgram
-        { model = initalModel
+        { model = initialModel
         , view = view
         , update = update
         }
